@@ -9,6 +9,7 @@ interface ButtonProps {
   value: CellValue;
   onClick(rowParam: number, colParam: number): (e: React.MouseEvent) => void;
   onContext(rowParam: number, colParam: number): (e: React.MouseEvent) => void;
+  red?: boolean;
 }
 
 const Button = ({
@@ -18,6 +19,7 @@ const Button = ({
   value,
   onClick,
   onContext,
+  red,
 }: ButtonProps) => {
   const renderContent = () => {
     if (state === CellState.visible) {
@@ -47,7 +49,7 @@ const Button = ({
     <div
       className={`Button ${
         state === CellState.visible ? 'visible' : ''
-      } value-${value}`}
+      } value-${value} ${red ? 'red' : ''}`}
       onClick={onClick(row, col)}
       onContextMenu={onContext(row, col)}
     >
