@@ -1,8 +1,8 @@
-import { ReactNode, useEffect, useState } from 'react';
+import React, { ReactNode, useEffect, useState } from 'react';
 import NumberDisplay from 'components/NumberDisplay';
 import Button from 'components/Button';
 import { generateCells } from 'utils';
-import { Face } from 'types';
+import { CellState, Face } from 'types';
 import 'components/App.scss';
 
 const App = () => {
@@ -49,6 +49,26 @@ const App = () => {
     }
   };
 
+  const handleCellContext = (rowParam: number, colParam: number) => (
+    e: React.MouseEvent<Element, MouseEvent>
+  ) => {
+    e.preventDefault();
+
+    if (!live) {
+      return;
+    }
+
+    const currentCells = cells.slice();
+    const currentCell = cells[rowParam][colParam];
+
+    if (currentCell.state === CellState.visible) {
+      return;
+    } else if (currentCell.state === CellState.open) {
+      currentCells[rowParam][colParam].state = CellState.flagged;
+      setCells(currentCells);
+    }
+  };
+
   const handleFaceClick = () => {
     if (live) {
       setLive(false);
@@ -65,6 +85,7 @@ const App = () => {
           state={cell.state}
           value={cell.value}
           onClick={handleCellClick}
+          onContext={handleCellContext}
           row={rowIndex}
           col={colIndex}
         />
