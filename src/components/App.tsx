@@ -8,6 +8,8 @@ import 'components/App.scss';
 const App = () => {
   const [cells, setCells] = useState(generateCells());
   const [face, setFace] = useState(Face.default);
+  const [time, setTime] = useState(0);
+  const [live, setLive] = useState(false);
 
   useEffect(() => {
     const handleMouseDown = () => {
@@ -26,6 +28,35 @@ const App = () => {
     };
   }, []);
 
+  useEffect(() => {
+    if (live) {
+      const timer = setInterval(() => {
+        setTime(time + 1);
+      }, 1000);
+
+      return () => {
+        clearInterval(timer);
+      };
+    }
+  }, [live, time]);
+
+  const handleCellClick = (rowParam: number, colParam: number) => () => {
+    console.log(rowParam, colParam);
+
+    // start game
+    if (!live) {
+      setLive(true);
+    }
+  };
+
+  const handleFaceClick = () => {
+    if (live) {
+      setLive(false);
+      setTime(0);
+      setCells(generateCells());
+    }
+  };
+
   const renderCelles = (): ReactNode => {
     return cells.map((row, rowIndex) =>
       row.map((cell, colIndex) => (
@@ -33,6 +64,7 @@ const App = () => {
           key={`${rowIndex}-${colIndex}`}
           state={cell.state}
           value={cell.value}
+          onClick={handleCellClick}
           row={rowIndex}
           col={colIndex}
         />
@@ -46,12 +78,12 @@ const App = () => {
     <div className="App">
       <div className="Header">
         <NumberDisplay value={0} />
-        <div className="Face">
+        <div className="Face" onClick={handleFaceClick}>
           <span role="img" aria-label="face">
             {face}
           </span>
         </div>
-        <NumberDisplay value={23} />
+        <NumberDisplay value={time} />
       </div>
       <div className="Body">{renderCelles()}</div>
     </div>

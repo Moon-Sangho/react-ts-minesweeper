@@ -1,14 +1,16 @@
-import 'components/Button/index.scss';
+import React from 'react';
 import { CellState, CellValue } from 'types';
+import 'components/Button/index.scss';
 
 interface ButtonProps {
   row: number;
   col: number;
   state: CellState;
   value: CellValue;
+  onClick(rowParam: number, colParam: number): (e: React.MouseEvent) => void;
 }
 
-const Button = ({ row, col, state, value }: ButtonProps) => {
+const Button = ({ row, col, state, value, onClick }: ButtonProps) => {
   const renderContent = () => {
     if (state === CellState.visible) {
       if (value === CellValue.bomb) {
@@ -38,6 +40,7 @@ const Button = ({ row, col, state, value }: ButtonProps) => {
       className={`Button ${
         state === CellState.visible ? 'visible' : ''
       } value-${value}`}
+      onClick={onClick(row, col)}
     >
       {renderContent()}
     </div>
